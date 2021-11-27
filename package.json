@@ -1,0 +1,23 @@
+{
+  "name": "simple-crud-api",
+  "version": "1.0.0",
+  "description": "simple crud node application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "macbaren"
+  },
+  "author": "macbaren",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  }
+}
