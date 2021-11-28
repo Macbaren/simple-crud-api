@@ -1,5 +1,7 @@
 const DB = require('../models/dbModels');
 
+const { getPostedData } = require('../utils');
+
 // get all usersDB using api api/usersDB
 async function getDB(req, res) {
   try {
@@ -31,19 +33,52 @@ async function getUser(req, res, id) {
 // create a user POST method api /api/usersDB
 async function createUser(req, res) {
   try {
+    const body = await getPostedData(req);
+
+    const { name, adress, phone } = JSON.parse(body);
+
     const user = {
-      title: 'Test',
-      description: 'lskdflsj',
+      name,
+      adress,
+      phone,
     };
 
-    const newUser = DB.createNewUser(user);
+    const newUser = await DB.createNewUser(user);
 
     res.writeHead(201, { 'Content-type': 'application/json' });
-
     return res.end(JSON.stringify(newUser));
   } catch (error) {
     console.log(error);
   }
 }
 
-module.exports = { getDB, getUser, createUser };
+// update the user POST method api /api/usersDB/:id
+async function updateUser(req, res, id) {
+  try {
+    const user = await DB.findUserById(id);
+
+    if (!user) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'User not found' }));
+    } else {
+      const body = await getPostedData(req);
+
+      const { name, adress, phone } = JSON.parse(body);
+
+      const updatedUser = {
+        name: name || user.name,
+        adress: adress || user.adress,
+        phone: phone || user.phone,
+      };
+
+      const updUser = await DB.updateUserById(id, updatedUser);
+
+      res.writeHead(200, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify(updUser));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+module.exports = { getDB, getUser, createUser, updateUser };

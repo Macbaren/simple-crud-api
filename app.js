@@ -7,6 +7,7 @@ const {
   getDB,
   getUser,
   createUser,
+  updateUser,
 } = require('./src/controllers/dbController');
 
 const PORT = process.env.PORT || 5000;
@@ -14,11 +15,20 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer((req, res) => {
   if (req.url === '/api/usersDB' && req.method === 'GET') {
     getDB(req, res);
-  } else if (/\/api\/usersDB\/[0-9]+/g.test(req.url) && req.method === 'GET') {
+  } else if (
+    /\/api\/usersDB\/[0-9a-z\-]+/g.test(req.url) &&
+    req.method === 'GET'
+  ) {
     const id = req.url.split('/').pop();
     getUser(req, res, id);
   } else if (req.url === '/api/usersDB' && req.method === 'POST') {
     createUser(req, res);
+  } else if (
+    /\/api\/usersDB\/[0-9a-z\-]+/g.test(req.url) &&
+    req.method === 'PUT'
+  ) {
+    const id = req.url.split('/').pop();
+    updateUser(req, res, id);
   } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Route not found' }));
