@@ -1,18 +1,18 @@
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
-const usersDB = require('../data/usersDB.json');
+let person = require('../data/person.json');
 const { writeDataToFile } = require('../utils');
 
 const findAll = () => {
   return new Promise((res, rej) => {
-    res(usersDB);
+    res(person);
   });
 };
 // find user by id
 const findUserById = (id) => {
   return new Promise((res, rej) => {
-    const user = usersDB.find((u) => u.id === id);
+    const user = person.find((u) => u.id === id);
     res(user);
   });
 };
@@ -20,20 +20,27 @@ const findUserById = (id) => {
 const createNewUser = (user) => {
   return new Promise((res, rej) => {
     const newUser = { id: uuidv4(), ...user };
-    usersDB.push(newUser);
-    console.log('newUser', path.join(__dirname, 'file.json'));
-    writeDataToFile(path.resolve('src/data/usersDB.json'), usersDB);
+    person.push(newUser);
+    writeDataToFile(path.resolve('src/data/person.json'), person);
     res(newUser);
   });
 };
 
 const updateUserById = (id, user) => {
   return new Promise((res, rej) => {
-    const userIndex = usersDB.findIndex((p) => p.id === id);
-    usersDB[userIndex] = { id, ...user };
+    const userIndex = person.findIndex((p) => p.id === id);
+    person[userIndex] = { id, ...user };
 
-    writeDataToFile(path.resolve('src/data/usersDB.json'), usersDB);
-    res(usersDB[userIndex]);
+    writeDataToFile(path.resolve('src/data/person.json'), person);
+    res(person[userIndex]);
+  });
+};
+
+const deleteUserById = (id) => {
+  return new Promise((res, rej) => {
+    person = person.filter((p) => p.id !== id);
+    writeDataToFile(path.resolve('src/data/person.json'), person);
+    res();
   });
 };
 
@@ -42,4 +49,5 @@ module.exports = {
   findUserById,
   createNewUser,
   updateUserById,
+  deleteUserById,
 };
